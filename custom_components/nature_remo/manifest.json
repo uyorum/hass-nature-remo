@@ -1,10 +1,12 @@
 {
   "domain": "nature_remo",
   "name": "Nature Remo",
-  "version": "0.5",
-  "documentation": "https://github.com/yutoyazaki/hass-nature-remo",
-  "issue_tracker": "https://github.com/yutoyazaki/hass-nature-remo/issues",
+  "version": "0.6",
+  "requirements": ["nature-remo==0.3.3"],
+  "documentation": "https://github.com/mrtolkien/hass-nature-remo",
+  "issue_tracker": "https://github.com/mrtolkien/hass-nature-remo/issues",
   "codeowners": [
-    "@yutoyazaki"
+    "@yutoyazaki",
+    "@mrtolkien"
   ]
 }
