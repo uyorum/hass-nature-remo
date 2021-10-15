@@ -120,7 +120,7 @@ class NatureRemoBase(Entity):
     @property
     def device_info(self):
         """Return the device info for the sensor."""
-        # Since device registration requires Config Entries, this dosen't work for now
+        # TODO Since device registration requires Config Entries, this doesn't work for now
         return {
             "identifiers": {(DOMAIN, self._device["id"])},
             "name": self._device["name"],

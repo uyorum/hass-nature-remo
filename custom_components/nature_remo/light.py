@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+from typing import Any
 
 from homeassistant.core import callback
 from homeassistant.components.light import LightEntity, PLATFORM_SCHEMA
@@ -33,13 +34,11 @@ async def async_setup_platform(
     config = hass.data[DOMAIN]["config"]
     appliances = coordinator.data["appliances"]
 
-    _LOGGER.error(coordinator.data["appliances"])
-
     add_entities(
         [
             NatureRemoLight(coordinator, api, appliance, config)
             for appliance in appliances.values()
-            if appliance["type"] == "light"
+            if appliance["type"] == "LIGHT"
         ]
     )
 
@@ -47,6 +46,16 @@ async def async_setup_platform(
 class NatureRemoLight(NatureRemoBase, LightEntity):
     """Implementation of a Nature Remo light"""
 
+    def turn_off(self, **kwargs: Any) -> None:
+        pass
+
+    def turn_on(self, **kwargs: Any) -> None:
+        pass
+
     def __init__(self, coordinator, api, appliance, config):
         super().__init__(coordinator, appliance)
-        ...
+
+        self._api = api
+
+        _LOGGER.error(appliance)
+        _LOGGER.error(config)
