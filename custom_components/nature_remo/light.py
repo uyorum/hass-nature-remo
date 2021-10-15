@@ -90,6 +90,7 @@ class NatureRemoLight(NatureRemoBase, LightEntity):
         """Fetch new state data for this light.
         This is the only method that should fetch new data for Home Assistant.
         """
+        return None
         # TODO (Need to look into the API)
         # self._light.update()
         # self._state = self._light.is_on()
