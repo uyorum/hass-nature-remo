@@ -54,11 +54,11 @@ class NatureRemoLight(NatureRemoBase, LightEntity):
         power = appliance["light"]["state"]["power"]
 
         if power == "on":
-            self._state = True
+            self._is_on = True
         elif power == "off":
-            self._state = True
+            self._is_on = True
         else:
-            self._state = None
+            self._is_on = None
 
     # @property
     # def brightness(self):
@@ -71,7 +71,7 @@ class NatureRemoLight(NatureRemoBase, LightEntity):
     @property
     def is_on(self) -> bool | None:
         """Return true if light is on."""
-        return self._state
+        return self._is_on
 
     def turn_on(self, **kwargs: Any) -> None:
         """Instruct the light to turn on.
@@ -79,12 +79,12 @@ class NatureRemoLight(NatureRemoBase, LightEntity):
         brightness control.
         """
         self._api.send_light_infrared_signal(self.unique_id, "on")
-        self._state = True
+        self._is_on = True
 
     def turn_off(self, **kwargs: Any) -> None:
         """Instruct the light to turn off."""
         self._api.send_light_infrared_signal(self.unique_id, "off")
-        self._state = False
+        self._is_on = False
 
     def update(self) -> None:
         """Fetch new state data for this light.
