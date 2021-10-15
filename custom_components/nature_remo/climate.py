@@ -4,8 +4,6 @@ import logging
 from homeassistant.core import callback
 from homeassistant.components.climate import ClimateEntity
 from homeassistant.components.climate.const import (
-    DEFAULT_MAX_TEMP,
-    DEFAULT_MIN_TEMP,
     HVAC_MODE_AUTO,
     HVAC_MODE_COOL,
     HVAC_MODE_DRY,
@@ -51,6 +49,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     api = hass.data[DOMAIN]["api"]
     config = hass.data[DOMAIN]["config"]
     appliances = coordinator.data["appliances"]
+
     async_add_entities(
         [
             NatureRemoAC(coordinator, api, appliance, config)
@@ -61,7 +60,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
 
 class NatureRemoAC(NatureRemoBase, ClimateEntity):
-    """Implementation of a Nature Remo E sensor."""
+    """Implementation of a Nature Remo E AC."""
 
     def __init__(self, coordinator, api, appliance, config):
         super().__init__(coordinator, appliance)
