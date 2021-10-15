@@ -10,7 +10,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 
-from . import DOMAIN, NatureRemoBase
+from . import DOMAIN
 
 import remo
 
@@ -28,15 +28,16 @@ async def async_setup_platform(
     if discovery_info is None:
         return
 
-    _LOGGER.debug("Setting up lights platform.")
+    _LOGGER.debug("Setting up Nature Remo lights platform.")
 
+    # TODO Understand what a coordinator is
     coordinator = hass.data[DOMAIN]["coordinator"]
     config = hass.data[DOMAIN]["config"]
     appliances = coordinator.data["appliances"]
 
     add_entities(
         [
-            NatureRemoLight(coordinator, appliance, config)
+            NatureRemoLight(appliance, config)
             for appliance in appliances.values()
             if appliance["type"] == "LIGHT"
         ]
@@ -46,18 +47,25 @@ async def async_setup_platform(
 class NatureRemoLight(LightEntity):
     """Implementation of a Nature Remo light"""
 
-    def __init__(self, coordinator, appliance, config):
+    def __init__(self, appliance, config):
         self._name = f"Nature Remo {appliance['nickname']}"
         self._appliance_id = appliance["id"]
 
+        # TODO Make an ASYNC version of this API
         self._api = remo.NatureRemoAPI(config["access_token"])
 
-        power = appliance["light"]["state"]["power"]
+        # Defining the value in the init
+        self._is_on = None
 
+        # TODO Remove the reliance on the other API calling code
+        power = appliance["light"]["state"]["power"]
+        self.save_state(power)
+
+    def save_state(self, power):
         if power == "on":
             self._is_on = True
         elif power == "off":
-            self._is_on = True
+            self._is_on = False
         else:
             self._is_on = None
 
@@ -80,11 +88,11 @@ class NatureRemoLight(LightEntity):
         """Fetch new state data for this light.
         This is the only method that should fetch new data for Home Assistant.
         """
-        return None
-        # TODO (Need to look into the API)
-        # self._light.update()
-        # self._state = self._light.is_on()
-        # self._brightness = self._light.brightness
+        # TODO Cache the response and make this common to all platforms of this integration
+        appliances = self._api.get_appliances()
+        appliance = next(a for a in appliances if a.id == self.unique_id)
+
+        self.save_state(appliance.light.state.power)
 
     def turn_on(self, **kwargs: Any) -> None:
         """Instruct the light to turn on.
@@ -100,6 +108,7 @@ class NatureRemoLight(LightEntity):
         self._is_on = False
 
     # @property
+    # TODO Get brightness to work through Nature Remo for my light first
     # def brightness(self):
     #     """Return the brightness of the light.
     #     This method is optional. Removing it indicates to Home Assistant
