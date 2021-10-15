@@ -43,11 +43,12 @@ async def async_setup_platform(
     )
 
 
-class NatureRemoLight(NatureRemoBase, LightEntity):
+class NatureRemoLight(LightEntity):
     """Implementation of a Nature Remo light"""
 
     def __init__(self, coordinator, appliance, config):
-        super().__init__(coordinator, appliance)
+        self._name = f"Nature Remo {appliance['nickname']}"
+        self._appliance_id = appliance["id"]
 
         self._api = remo.NatureRemoAPI(config["access_token"])
 
@@ -60,18 +61,30 @@ class NatureRemoLight(NatureRemoBase, LightEntity):
         else:
             self._is_on = None
 
-    # @property
-    # def brightness(self):
-    #     """Return the brightness of the light.
-    #     This method is optional. Removing it indicates to Home Assistant
-    #     that brightness is not supported for this light.
-    #     """
-    #     return self._brightness
+    @property
+    def name(self):
+        """Return the name of the sensor."""
+        return self._name
+
+    @property
+    def unique_id(self):
+        """Return a unique ID."""
+        return self._appliance_id
 
     @property
     def is_on(self) -> bool | None:
         """Return true if light is on."""
         return self._is_on
+
+    def update(self) -> None:
+        """Fetch new state data for this light.
+        This is the only method that should fetch new data for Home Assistant.
+        """
+        return None
+        # TODO (Need to look into the API)
+        # self._light.update()
+        # self._state = self._light.is_on()
+        # self._brightness = self._light.brightness
 
     def turn_on(self, **kwargs: Any) -> None:
         """Instruct the light to turn on.
@@ -86,12 +99,10 @@ class NatureRemoLight(NatureRemoBase, LightEntity):
         self._api.send_light_infrared_signal(self.unique_id, "off")
         self._is_on = False
 
-    def update(self) -> None:
-        """Fetch new state data for this light.
-        This is the only method that should fetch new data for Home Assistant.
-        """
-        return None
-        # TODO (Need to look into the API)
-        # self._light.update()
-        # self._state = self._light.is_on()
-        # self._brightness = self._light.brightness
+    # @property
+    # def brightness(self):
+    #     """Return the brightness of the light.
+    #     This method is optional. Removing it indicates to Home Assistant
+    #     that brightness is not supported for this light.
+    #     """
+    #     return self._brightness
