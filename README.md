@@ -6,9 +6,15 @@ Yet another [Home Assistant](https://www.home-assistant.io) component for [Natur
 
 <img src="./assets/screenshot_1.png" width="600"><img src="./assets/screenshot_2.png" width="200">
 
+# MrTolkien fork
+
+This is a fork adding basic Lights support as well as a refactor for readability.
+
+**AS OF 2021-10-15 THERE IS NO DOC FOR THIS INTEGRATION**
+
 ## Supported features
 
-- [x] Air Conditionar
+- [x] Air Conditioner
   - [x] Set mode (e.g. cool, warm, blow etc.)
   - [x] Set temperature
   - [x] Set fan mode
@@ -29,34 +35,29 @@ Tested on Home Assistant Core 2021.3.3 on Docker
 
 ### Manual Install
 
-1. Download this repository
-1. Create `custom_components/nature_remo` folder at your config directory
-1. Copy files into it (Just drag&drop whole files would be fine)
+Add the contents of `custom_components/nature_remo` to the `/config/custom_components/nature_remo` folder of your 
+Home Assistant installation
+- You can either copy the folder directly or set up a symbolic link/docker mount
 
+Final structure:
 ```
-{path_to_your_config}
+{/config}
 ├── configuration.yaml
 └── custom_components
     └── nature_remo
         ├── __init__.py
         ├── climate.py
         ├── manifest.json
+        ├── light.json
         └── sensor.py
-```
-
-### Install via git submodule
-
-If you have set up git, you can also install this component by adding submodule to your git repository.
-
-```sh
-git submodule add https://github.com/yutoyazaki/hass-nature-remo.git {path_to_custom_component}/nature_remo
+              
 ```
 
 ## Configuration
 
 1. Go to https://home.nature.global and sign in/up
 1. Generate access token
-1. Add following codes to your `configuration.yaml` file
+1. Add the token to your `configuration.yaml` file
 
 ```yaml
 nature_remo:
