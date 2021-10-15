@@ -54,9 +54,11 @@ class NatureRemoLight(NatureRemoBase, LightEntity):
         _LOGGER.error(appliance)
         _LOGGER.error(config)
 
-        if appliance["state"]["power"] == "on":
+        power = appliance["light"]["state"]["power"]
+
+        if power == "on":
             self._state = True
-        elif appliance["state"]["power"] == "off":
+        elif power == "off":
             self._state = True
         else:
             self._state = None
