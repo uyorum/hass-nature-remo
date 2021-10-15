@@ -31,13 +31,12 @@ async def async_setup_platform(
     _LOGGER.debug("Setting up lights platform.")
 
     coordinator = hass.data[DOMAIN]["coordinator"]
-    api = hass.data[DOMAIN]["api"]
     config = hass.data[DOMAIN]["config"]
     appliances = coordinator.data["appliances"]
 
     add_entities(
         [
-            NatureRemoLight(coordinator, api, appliance, config)
+            NatureRemoLight(coordinator, appliance, config)
             for appliance in appliances.values()
             if appliance["type"] == "LIGHT"
         ]
@@ -47,11 +46,13 @@ async def async_setup_platform(
 class NatureRemoLight(NatureRemoBase, LightEntity):
     """Implementation of a Nature Remo light"""
 
-    def __init__(self, coordinator, api, appliance, config):
+    def __init__(self, coordinator, appliance, config):
         super().__init__(coordinator, appliance)
 
-        # TODO Use the right python package instead
-        self._api = api
+        self._api = remo.NatureRemoAPI(config["access_token"])
+
+        _LOGGER.error(appliance)
+        _LOGGER.error(config)
 
         if appliance["state"]["power"] == "on":
             self._state = True
@@ -59,9 +60,6 @@ class NatureRemoLight(NatureRemoBase, LightEntity):
             self._state = True
         else:
             self._state = None
-
-        _LOGGER.error(appliance["state"])
-        _LOGGER.error(config)
 
     # @property
     # def brightness(self):
