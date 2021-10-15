@@ -51,9 +51,6 @@ class NatureRemoLight(NatureRemoBase, LightEntity):
 
         self._api = remo.NatureRemoAPI(config["access_token"])
 
-        _LOGGER.error(appliance)
-        _LOGGER.error(config)
-
         power = appliance["light"]["state"]["power"]
 
         if power == "on":
@@ -81,20 +78,19 @@ class NatureRemoLight(NatureRemoBase, LightEntity):
         You can skip the brightness part if your light does not support
         brightness control.
         """
-        return None
-        # self._light.brightness = kwargs.get(ATTR_BRIGHTNESS, 255)
-        # self._light.turn_on()
+        self._api.send_light_infrared_signal(self.unique_id, "on")
+        self._state = True
 
     def turn_off(self, **kwargs: Any) -> None:
         """Instruct the light to turn off."""
-        return None
-        # self._light.turn_off()
+        self._api.send_light_infrared_signal(self.unique_id, "off")
+        self._state = False
 
     def update(self) -> None:
         """Fetch new state data for this light.
         This is the only method that should fetch new data for Home Assistant.
         """
-        return None
+        # TODO (Need to look into the API)
         # self._light.update()
         # self._state = self._light.is_on()
         # self._brightness = self._light.brightness
