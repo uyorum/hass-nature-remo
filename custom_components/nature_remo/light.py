@@ -64,9 +64,6 @@ class NatureRemoLight(CoordinatorEntity, LightEntity):
         self._name = appliance["nickname"]
         self._appliance_id = appliance["id"]
 
-        power = appliance["light"]["state"]["power"]
-        self.save_state(power)
-
     @property
     def is_on(self) -> bool | None:
         """Returns True if light is on."""
