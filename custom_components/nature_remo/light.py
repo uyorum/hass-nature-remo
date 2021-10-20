@@ -59,7 +59,6 @@ class NatureRemoLight(CoordinatorEntity, LightEntity):
         super().__init__(appliances_update_coordinator)
 
         self.api = api
-        self.appliances_update_coordinator = appliances_update_coordinator
 
         self._name = appliance["nickname"]
         self._appliance_id = appliance["id"]
@@ -86,7 +85,7 @@ class NatureRemoLight(CoordinatorEntity, LightEntity):
 
     @property
     def appliance(self):
-        return self.appliances_update_coordinator.data[self.unique_id]
+        return self.coordinator.data[self.unique_id]
 
     @property
     def power(self):
@@ -110,7 +109,7 @@ class NatureRemoLight(CoordinatorEntity, LightEntity):
         # Directly updating it in the coordinator for instant UI feedback
         self.power = "on"
 
-        await self.appliances_update_coordinator.async_request_refresh()
+        await self.coordinator.async_request_refresh()
 
     async def async_turn_off(self, **kwargs: Any) -> None:
         """
@@ -121,7 +120,7 @@ class NatureRemoLight(CoordinatorEntity, LightEntity):
         # Directly updating it in the coordinator for instant UI feedback
         self.power = "off"
 
-        await self.appliances_update_coordinator.async_request_refresh()
+        await self.coordinator.async_request_refresh()
 
     # @property
     # TODO
