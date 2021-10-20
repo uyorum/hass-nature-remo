@@ -9,11 +9,14 @@ license = "MIT"
 python = "^3.8"
 
 [tool.poetry.dev-dependencies]
-voluptuous = "^0.12.2"
 python-dotenv = "^0.19.1"
-pytest-asyncio = "^0.16.0"
 pytest = "^6.2.5"
+pytest-asyncio = "^0.16.0"
 pytest-homeassistant-custom-component = "^0.4.5"
+# TODO Remove those once we have our own async package
+voluptuous = "^0.12.2"
+marshmallow = "^3.7.1"
+click = "^7.1.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
