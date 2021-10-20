@@ -29,7 +29,6 @@ async def async_setup_platform(
     _LOGGER.debug("Setting up Nature Remo lights platform.")
 
     appliances_update_coordinator = hass.data[DOMAIN]["appliances_update_coordinator"]
-    appliances = appliances_update_coordinator.data["appliances"]
 
     add_entities(
         [
@@ -38,7 +37,7 @@ async def async_setup_platform(
                 hass.data[DOMAIN]["api"],
                 appliances_update_coordinator,
             )
-            for appliance in appliances.values()
+            for appliance in appliances_update_coordinator.data.values()
             if appliance["type"] == "LIGHT"
         ]
     )

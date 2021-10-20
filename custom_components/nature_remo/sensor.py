@@ -20,6 +20,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     _LOGGER.debug("Setting up sensor platform.")
     coordinator = hass.data[DOMAIN]["coordinator"]
     appliances = coordinator.data["appliances"]
+
     async_add_entities(
         [
             NatureRemoE(coordinator, appliance)
