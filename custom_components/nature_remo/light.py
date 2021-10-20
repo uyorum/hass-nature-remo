@@ -23,7 +23,7 @@ async def async_setup_platform(
     add_entities: AddEntitiesCallback,
     discovery_info: DiscoveryInfoType | None = None,
 ) -> None:
-    """Set up the Nature Remo AC."""
+    """Sets up all light found in the Nature Remo API."""
 
     if discovery_info is None:
         return

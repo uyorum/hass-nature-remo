@@ -38,12 +38,18 @@ CONFIG_SCHEMA = vol.Schema(
 )
 
 
-async def async_setup(hass, config):
-    """Set up Nature Remo component."""
-    _LOGGER.debug("Setting up Nature Remo component.")
+async def async_setup(
+    hass,
+    config,
+):
+    """Sets up the Nature Remo integration."""
+
+    _LOGGER.debug("Setting up Nature Remo integration.")
+
     access_token = config[DOMAIN][CONF_ACCESS_TOKEN]
     session = async_get_clientsession(hass)
     api = NatureRemoAPI(access_token, session)
+
     coordinator = hass.data[DOMAIN] = DataUpdateCoordinator(
         hass,
         _LOGGER,
@@ -51,7 +57,9 @@ async def async_setup(hass, config):
         update_method=api.get,
         update_interval=DEFAULT_UPDATE_INTERVAL,
     )
+
     await coordinator.async_refresh()
+
     hass.data[DOMAIN] = {
         "api": api,
         "coordinator": coordinator,
