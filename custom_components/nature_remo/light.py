@@ -38,9 +38,9 @@ async def async_setup_platform(
     async_add_entities(
         [
             NatureRemoLight(
+                appliances_update_coordinator,
                 appliance,
                 hass.data[DOMAIN]["api"],
-                appliances_update_coordinator,
             )
             for appliance in appliances_update_coordinator.data.values()
             if appliance["type"] == "LIGHT"
@@ -53,9 +53,9 @@ class NatureRemoLight(CoordinatorEntity, LightEntity):
 
     def __init__(
         self,
+        coordinator: DataUpdateCoordinator,
         appliance: dict,
         api: NatureRemoAPI,
-        coordinator: DataUpdateCoordinator = None,
     ):
         # This will call the CoordinatorEntity constructor and define self.coordinator
         super().__init__(coordinator)
@@ -65,9 +65,9 @@ class NatureRemoLight(CoordinatorEntity, LightEntity):
         self._name = appliance["nickname"]
         self._appliance_id = appliance["id"]
 
-    @property
-    def should_poll(self) -> bool:
-        return True
+    # @property
+    # def should_poll(self) -> bool:
+    #     return True
 
     @property
     def is_on(self):
