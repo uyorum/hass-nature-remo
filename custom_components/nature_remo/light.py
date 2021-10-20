@@ -1,20 +1,17 @@
 """Support for Nature Remo Light."""
 from __future__ import annotations
 
-import logging
 from typing import Any
-
-from homeassistant.components.light import LightEntity
 
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 
-from . import DOMAIN
+from homeassistant.components.light import LightEntity
+
+from . import DOMAIN, _LOGGER
 
 import remo
-
-_LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_platform(

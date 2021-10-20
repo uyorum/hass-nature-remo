@@ -1,6 +1,4 @@
 """Support for Nature Remo AC."""
-import logging
-
 from homeassistant.core import callback
 from homeassistant.components.climate import ClimateEntity
 from homeassistant.components.climate.const import (
@@ -15,9 +13,8 @@ from homeassistant.components.climate.const import (
     SUPPORT_TARGET_TEMPERATURE,
 )
 from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
-from . import DOMAIN, CONF_COOL_TEMP, CONF_HEAT_TEMP, NatureRemoBase
 
-_LOGGER = logging.getLogger(__name__)
+from .common import NatureRemoBase, CONF_COOL_TEMP, CONF_HEAT_TEMP, DOMAIN, _LOGGER
 
 SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_FAN_MODE | SUPPORT_SWING_MODE
 
@@ -218,7 +215,7 @@ class NatureRemoAC(NatureRemoBase, ClimateEntity):
     def _update(self, ac_settings, device=None):
         # Holding this to determine the AC mode while it's turned-off
         self._remo_mode = ac_settings["mode"]
-        
+
         try:
             self._target_temperature = float(ac_settings["temp"])
             self._last_target_temperature[self._remo_mode] = ac_settings["temp"]

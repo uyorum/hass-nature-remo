@@ -7,7 +7,8 @@ from homeassistant.const import (
     POWER_WATT,
     DEVICE_CLASS_POWER,
 )
-from . import DOMAIN, NatureRemoBase
+from . import DOMAIN
+from .common import NatureRemoBase
 
 _LOGGER = logging.getLogger(__name__)
 
