@@ -52,9 +52,14 @@ class RateLimit:
 class NatureRemoAPI:
     """Client for the Nature Remo API."""
 
-    def __init__(self, access_token: str, debug: bool = False):
+    def __init__(
+        self,
+        access_token: str,
+        debug: bool = False,
+    ):
         if debug:
             enable_debug_mode()
+
         self.access_token = access_token
         self.base_url = BASE_URL
         self.rate_limit = RateLimit()
@@ -91,9 +96,7 @@ class NatureRemoAPI:
         if "X-Rate-Limit-Limit" in resp.headers:
             self.rate_limit.limit = int(resp.headers["X-Rate-Limit-Limit"])
         if "X-Rate-Limit-Remaining" in resp.headers:
-            self.rate_limit.remaining = int(
-                resp.headers["X-Rate-Limit-Remaining"]
-            )
+            self.rate_limit.remaining = int(resp.headers["X-Rate-Limit-Remaining"])
         if "X-Rate-Limit-Reset" in resp.headers:
             self.rate_limit.reset = datetime.utcfromtimestamp(
                 int(resp.headers["X-Rate-Limit-Reset"])
@@ -120,9 +123,7 @@ class NatureRemoAPI:
             A User object.
         """
         endpoint = "/1/users/me"
-        resp = self.__request(
-            endpoint, HTTPMethod.POST, {"nickname": nickname}
-        )
+        resp = self.__request(endpoint, HTTPMethod.POST, {"nickname": nickname})
         json = self.__get_json(resp)
         return UserSchema().load(json)
 
@@ -242,9 +243,7 @@ class NatureRemoAPI:
             appliances: List of all appliances' IDs comma separated.
         """
         endpoint = "/1/appliance_orders"
-        resp = self.__request(
-            endpoint, HTTPMethod.POST, {"appliances": appliances}
-        )
+        resp = self.__request(endpoint, HTTPMethod.POST, {"appliances": appliances})
         if not resp.ok:
             raise NatureRemoError(build_error_message(resp))
 
@@ -259,9 +258,7 @@ class NatureRemoAPI:
         if not resp.ok:
             raise NatureRemoError(build_error_message(resp))
 
-    def update_appliance(
-        self, appliance: str, nickname: str, image: str
-    ) -> Appliance:
+    def update_appliance(self, appliance: str, nickname: str, image: str) -> Appliance:
         """Update appliance.
 
         Args:
@@ -388,9 +385,7 @@ class NatureRemoAPI:
             image: Basename of the image file included in the app.
         """
         endpoint = f"/1/signals/{signal}"
-        resp = self.__request(
-            endpoint, HTTPMethod.POST, {"name": name, "image": image}
-        )
+        resp = self.__request(endpoint, HTTPMethod.POST, {"name": name, "image": image})
         if not resp.ok:
             raise NatureRemoError(build_error_message(resp))
 

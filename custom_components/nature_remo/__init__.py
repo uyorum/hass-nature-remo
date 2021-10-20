@@ -17,7 +17,8 @@ CONF_COOL_TEMP = "cool_temperature"
 CONF_HEAT_TEMP = "heat_temperature"
 DEFAULT_COOL_TEMP = 28
 DEFAULT_HEAT_TEMP = 20
-DEFAULT_UPDATE_INTERVAL = timedelta(seconds=60)
+# TODO See if this is too low, English API says 30 requests/minute, JP says 30/5 minutes...
+DEFAULT_UPDATE_INTERVAL = timedelta(seconds=10)
 
 
 CONFIG_SCHEMA = vol.Schema(
@@ -47,15 +48,18 @@ async def async_setup(
 
     _LOGGER.debug("Setting up Nature Remo integration.")
 
-    access_token = config[DOMAIN][CONF_ACCESS_TOKEN]
-    session = async_get_clientsession(hass)
-    api = NatureRemoAPI(access_token, session)
+    # Creating integration-global objects
+    api = NatureRemoAPI(
+        config[DOMAIN][CONF_ACCESS_TOKEN], async_get_clientsession(hass)
+    )
 
+    # This is an object that will periodically refresh its values, allowing us to read sensors and appliances states
     coordinator = hass.data[DOMAIN] = DataUpdateCoordinator(
         hass,
         _LOGGER,
         name="Nature Remo update",
-        update_method=api.get,
+        update_method=api.get_appliances_and_devices,
+        # TODO Make variable
         update_interval=DEFAULT_UPDATE_INTERVAL,
     )
 
