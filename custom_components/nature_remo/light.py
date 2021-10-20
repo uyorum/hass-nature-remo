@@ -18,6 +18,7 @@ from . import DOMAIN, _LOGGER
 from .api.nature_remo_api import NatureRemoAPI
 
 
+# TODO Move that to async_setup_entry syntax
 async def async_setup_platform(
     hass: HomeAssistant,
     config: ConfigType,
@@ -48,16 +49,16 @@ async def async_setup_platform(
 
 
 class NatureRemoLight(CoordinatorEntity, LightEntity):
-    """Implementation of a Nature Remo light"""
+    """Implementation of a Nature Remo IR-controlled light"""
 
     def __init__(
         self,
         appliance: dict,
         api: NatureRemoAPI,
-        appliances_update_coordinator: DataUpdateCoordinator = None,
+        coordinator: DataUpdateCoordinator = None,
     ):
-        # This will call the CoordinatorEntity constructor
-        super().__init__(appliances_update_coordinator)
+        # This will call the CoordinatorEntity constructor and define self.coordinator
+        super().__init__(coordinator)
 
         self.api = api
 
@@ -65,7 +66,11 @@ class NatureRemoLight(CoordinatorEntity, LightEntity):
         self._appliance_id = appliance["id"]
 
     @property
-    def is_on(self) -> bool | None:
+    def should_poll(self) -> bool:
+        return True
+
+    @property
+    def is_on(self):
         """Returns True if light is on."""
         power = self.coordinator.data[self.unique_id]["light"]["state"]["power"]
 
@@ -86,7 +91,7 @@ class NatureRemoLight(CoordinatorEntity, LightEntity):
         """Returns a unique ID."""
         return self._appliance_id
 
-    async def async_turn_on(self, **kwargs: Any) -> None:
+    async def async_turn_on(self, **kwargs):
         """
         Instructs the light to turn on.
         """
