@@ -115,6 +115,7 @@ class NatureRemoLight(LightEntity):
         """
         await self.api.post(f"/appliances/{self.unique_id}/light", {"button": "on"})
 
+        # TODO This does not work???
         # Directly updating it in the coordinator for instant UI feedback
         self.power = "on"
 

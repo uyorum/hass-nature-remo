@@ -230,9 +230,10 @@ class NatureRemoAC(NatureRemoBase, ClimateEntity):
         )
 
     async def async_update(self):
-        """Update the entity.
+        """
+        Updates the entity
 
-        Only used by the generic entity update service.
+        Only used by the generic entity update service
         """
         pass
         # TODO See if that is really needed here
@@ -270,6 +271,7 @@ class NatureRemoAC(NatureRemoBase, ClimateEntity):
             self.appliances_update_coordinator.data[self.unique_id]["settings"],
             self.devices_update_coordinator.data[self._device["id"]],
         )
+
         self.async_write_ha_state()
 
     async def _post(self, data):

@@ -71,8 +71,8 @@ async def async_setup(
         update_interval=timedelta(10),
     )
 
-    await appliances_update_coordinator.async_config_entry_first_refresh()
-    await devices_update_coordinator.async_config_entry_first_refresh()
+    await appliances_update_coordinator.async_refresh()
+    await devices_update_coordinator.async_refresh()
 
     hass.data[DOMAIN] = {
         "api": api,
