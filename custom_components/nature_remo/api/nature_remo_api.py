@@ -25,6 +25,7 @@ class NatureRemoAPI:
         Gets the list of IR-controlled appliances accessible through Nature, as well as their state
         """
         _LOGGER.debug("Fetching appliances list from the Nature Remo API.")
+        _LOGGER.warning("Fetching appliances list from the Nature Remo API.")
 
         appliances_query = self._session.get(
             f"{_API_URL}/appliances", headers=self.headers
