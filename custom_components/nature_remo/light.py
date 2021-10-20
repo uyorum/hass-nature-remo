@@ -9,8 +9,8 @@ from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 
 from homeassistant.components.light import LightEntity
 from homeassistant.helpers.update_coordinator import (
-    DataUpdateCoordinator,
     CoordinatorEntity,
+    DataUpdateCoordinator,
 )
 
 from . import DOMAIN, _LOGGER
@@ -21,19 +21,20 @@ from .api.nature_remo_api import NatureRemoAPI
 async def async_setup_platform(
     hass: HomeAssistant,
     config: ConfigType,
-    add_entities: AddEntitiesCallback,
+    async_add_entities: AddEntitiesCallback,
     discovery_info: DiscoveryInfoType | None = None,
 ) -> None:
     """Sets up all light found in the Nature Remo API."""
 
     if discovery_info is None:
+        # TODO What even is that
         return
 
     _LOGGER.debug("Setting up Nature Remo lights platform.")
 
     appliances_update_coordinator = hass.data[DOMAIN]["appliances_update_coordinator"]
 
-    add_entities(
+    async_add_entities(
         [
             NatureRemoLight(
                 appliance,
@@ -66,9 +67,11 @@ class NatureRemoLight(CoordinatorEntity, LightEntity):
     @property
     def is_on(self) -> bool | None:
         """Returns True if light is on."""
-        if self.power == "on":
+        power = self.coordinator.data[self.unique_id]["light"]["state"]["power"]
+
+        if power == "on":
             return True
-        elif self.power == "off":
+        elif power == "off":
             return False
         else:
             return None
@@ -83,32 +86,15 @@ class NatureRemoLight(CoordinatorEntity, LightEntity):
         """Returns a unique ID."""
         return self._appliance_id
 
-    @property
-    def appliance(self):
-        return self.coordinator.data[self.unique_id]
-
-    @property
-    def power(self):
-        return self.appliance["light"]["state"]["power"]
-
-    @power.setter
-    def power(self, value):
-        # TODO Remove try/catch, here because in the test we don't have a coordinator (we should)
-        try:
-            self.appliance["light"]["state"]["power"] = value
-        except AttributeError:
-            pass
-
     async def async_turn_on(self, **kwargs: Any) -> None:
         """
         Instructs the light to turn on.
         """
+        # TODO Take that code out and in the API
         await self.api.post(f"/appliances/{self.unique_id}/light", {"button": "on"})
 
         # TODO Check if that is needed
-        # Directly updating it in the coordinator for instant UI feedback
-        self.power = "on"
-
+        #   Also see if we can directly update the value without a query?
         await self.coordinator.async_request_refresh()
 
     async def async_turn_off(self, **kwargs: Any) -> None:
@@ -116,9 +102,6 @@ class NatureRemoLight(CoordinatorEntity, LightEntity):
         Instructs the light to turn off.
         """
         await self.api.post(f"/appliances/{self.unique_id}/light", {"button": "off"})
-
-        # Directly updating it in the coordinator for instant UI feedback
-        self.power = "off"
 
         await self.coordinator.async_request_refresh()
 
