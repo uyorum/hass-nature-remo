@@ -235,9 +235,10 @@ class NatureRemoAC(NatureRemoBase, ClimateEntity):
 
         Only used by the generic entity update service
         """
-        pass
+
         # TODO See if that is really needed here
         await self.appliances_update_coordinator.async_request_refresh()
+        await self.devices_update_coordinator.async_request_refresh()
 
     def _update(self, ac_settings, device=None):
         # Holding this to determine the AC mode while it's turned-off
