@@ -225,6 +225,9 @@ class NatureRemoAC(NatureRemoBase, ClimateEntity):
         self.async_on_remove(
             self.appliances_update_coordinator.async_add_listener(self._update_callback)
         )
+        self.async_on_remove(
+            self.devices_update_coordinator.async_add_listener(self._update_callback)
+        )
 
     async def async_update(self):
         """Update the entity.
@@ -260,15 +263,18 @@ class NatureRemoAC(NatureRemoBase, ClimateEntity):
 
     @callback
     def _update_callback(self):
+        # TODO REMOVE
+        print("UPDATE CALLBACK")
+
         self._update(
-            self.appliances_update_coordinator.data[self._appliance_id]["settings"],
+            self.appliances_update_coordinator.data[self.unique_id]["settings"],
             self.devices_update_coordinator.data[self._device["id"]],
         )
         self.async_write_ha_state()
 
     async def _post(self, data):
         response = await self.api.post(
-            f"/appliances/{self._appliance_id}/aircon_settings",
+            f"/appliances/{self.unique_id}/aircon_settings",
             data,
         )
         self._update(response)
