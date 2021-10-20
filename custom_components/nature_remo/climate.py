@@ -43,14 +43,14 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     if discovery_info is None:
         return
     _LOGGER.debug("Setting up climate platform.")
-    coordinator = hass.data[DOMAIN]["coordinator"]
+    update_coordinator = hass.data[DOMAIN]["coordinator"]
     api = hass.data[DOMAIN]["api"]
     config = hass.data[DOMAIN]["config"]
-    appliances = coordinator.data["appliances"]
+    appliances = update_coordinator.data["appliances"]
 
     async_add_entities(
         [
-            NatureRemoAC(coordinator, api, appliance, config)
+            NatureRemoAC(update_coordinator, api, appliance, config)
             for appliance in appliances.values()
             if appliance["type"] == "AC"
         ]

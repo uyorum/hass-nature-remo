@@ -8,6 +8,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 
 from homeassistant.components.light import LightEntity
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from . import DOMAIN, _LOGGER
 
@@ -27,12 +28,16 @@ async def async_setup_platform(
 
     _LOGGER.debug("Setting up Nature Remo lights platform.")
 
-    coordinator = hass.data[DOMAIN]["coordinator"]
-    appliances = coordinator.data["appliances"]
+    update_coordinator = hass.data[DOMAIN]["coordinator"]
+    appliances = update_coordinator.data["appliances"]
 
     add_entities(
         [
-            NatureRemoLight(appliance, hass.data[DOMAIN]["api"])
+            NatureRemoLight(
+                appliance,
+                hass.data[DOMAIN]["api"],
+                update_coordinator,
+            )
             for appliance in appliances.values()
             if appliance["type"] == "LIGHT"
         ]
@@ -42,8 +47,14 @@ async def async_setup_platform(
 class NatureRemoLight(LightEntity):
     """Implementation of a Nature Remo light"""
 
-    def __init__(self, appliance: dict, api: NatureRemoAPI):
-        self._api = api
+    def __init__(
+        self,
+        appliance: dict,
+        api: NatureRemoAPI,
+        update_coordinator: DataUpdateCoordinator,
+    ):
+        self.api = api
+        self.update_coordinator = update_coordinator
 
         self._name = appliance["nickname"]
         self._appliance_id = appliance["id"]
@@ -81,24 +92,24 @@ class NatureRemoLight(LightEntity):
         """
         Updates the light status by reading the data in the update coordinator
         """
-        ...
-        # TODO Cache the response and make this common to all platforms of this integration
-        # appliances = self._api.get_appliances()
-        # appliance = next(a for a in appliances if a.id == self.unique_id)
-        # self.save_state(appliance.light.state.power)
+        appliances = self.update_coordinator.data["appliances"]
+        appliance = next(a for a in appliances if a.id == self.unique_id)
+
+        power = appliance["light"]["state"]["power"]
+        self.save_state(power)
 
     async def async_turn_on(self, **kwargs: Any) -> None:
         """
         Instructs the light to turn on.
         """
-        await self._api.post(f"/appliances/{self.unique_id}/light", {"button": "on"})
+        await self.api.post(f"/appliances/{self.unique_id}/light", {"button": "on"})
         self._is_on = True
 
     async def async_turn_off(self, **kwargs: Any) -> None:
         """
         Instructs the light to turn off.
         """
-        await self._api.post(f"/appliances/{self.unique_id}/light", {"button": "off"})
+        await self.api.post(f"/appliances/{self.unique_id}/light", {"button": "off"})
         self._is_on = False
 
     # @property
