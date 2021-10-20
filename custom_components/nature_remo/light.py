@@ -8,7 +8,10 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 
 from homeassistant.components.light import LightEntity
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+from homeassistant.helpers.update_coordinator import (
+    DataUpdateCoordinator,
+    CoordinatorEntity,
+)
 
 from . import DOMAIN, _LOGGER
 
@@ -43,34 +46,36 @@ async def async_setup_platform(
     )
 
 
-class NatureRemoLight(LightEntity):
+class NatureRemoLight(CoordinatorEntity, LightEntity):
     """Implementation of a Nature Remo light"""
 
     def __init__(
         self,
         appliance: dict,
         api: NatureRemoAPI,
-        update_coordinator: DataUpdateCoordinator = None,
+        appliances_update_coordinator: DataUpdateCoordinator = None,
     ):
+        # This will call the CoordinatorEntity constructor
+        super().__init__(appliances_update_coordinator)
+
         self.api = api
-        self.update_coordinator = update_coordinator
+        self.appliances_update_coordinator = appliances_update_coordinator
 
         self._name = appliance["nickname"]
         self._appliance_id = appliance["id"]
 
-        # Defining the value in the init for linter warnings
-        self._is_on = None
-
         power = appliance["light"]["state"]["power"]
         self.save_state(power)
 
-    def save_state(self, power):
-        if power == "on":
-            self._is_on = True
-        elif power == "off":
-            self._is_on = False
+    @property
+    def is_on(self) -> bool | None:
+        """Returns True if light is on."""
+        if self.power == "on":
+            return True
+        elif self.power == "off":
+            return False
         else:
-            self._is_on = None
+            return None
 
     @property
     def name(self):
@@ -84,7 +89,7 @@ class NatureRemoLight(LightEntity):
 
     @property
     def appliance(self):
-        return self.update_coordinator.data[self.unique_id]
+        return self.appliances_update_coordinator.data[self.unique_id]
 
     @property
     def power(self):
@@ -92,22 +97,11 @@ class NatureRemoLight(LightEntity):
 
     @power.setter
     def power(self, value):
-        # TODO Remove try/catch, here because test don't have a coordinator
+        # TODO Remove try/catch, here because in the test we don't have a coordinator (we should)
         try:
             self.appliance["light"]["state"]["power"] = value
         except AttributeError:
             pass
-
-    @property
-    def is_on(self) -> bool | None:
-        """Returns True if light is on."""
-        return self._is_on
-
-    def update(self) -> None:
-        """
-        Updates the light status by reading the data in the update coordinator
-        """
-        self.save_state(self.power)
 
     async def async_turn_on(self, **kwargs: Any) -> None:
         """
@@ -115,9 +109,11 @@ class NatureRemoLight(LightEntity):
         """
         await self.api.post(f"/appliances/{self.unique_id}/light", {"button": "on"})
 
-        # TODO This does not work???
+        # TODO Check if that is needed
         # Directly updating it in the coordinator for instant UI feedback
         self.power = "on"
+
+        await self.appliances_update_coordinator.async_request_refresh()
 
     async def async_turn_off(self, **kwargs: Any) -> None:
         """
@@ -127,6 +123,8 @@ class NatureRemoLight(LightEntity):
 
         # Directly updating it in the coordinator for instant UI feedback
         self.power = "off"
+
+        await self.appliances_update_coordinator.async_request_refresh()
 
     # @property
     # TODO

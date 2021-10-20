@@ -58,7 +58,7 @@ async def async_setup(
     appliances_update_coordinator = DataUpdateCoordinator(
         hass,
         _LOGGER,
-        name="Nature Remo update",
+        name="Nature Remo Appliances Update",
         update_method=api.get_appliances,
         update_interval=timedelta(60),
     )
@@ -66,13 +66,13 @@ async def async_setup(
     devices_update_coordinator = DataUpdateCoordinator(
         hass,
         _LOGGER,
-        name="Nature Remo update",
+        name="Nature Remo Devices Update",
         update_method=api.get_devices,
         update_interval=timedelta(10),
     )
 
-    await appliances_update_coordinator.async_refresh()
-    await devices_update_coordinator.async_refresh()
+    await appliances_update_coordinator.async_config_entry_first_refresh()
+    await devices_update_coordinator.async_config_entry_first_refresh()
 
     hass.data[DOMAIN] = {
         "api": api,
