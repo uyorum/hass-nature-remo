@@ -216,11 +216,14 @@ class NatureRemoAC(NatureRemoBase, ClimateEntity):
         await self._coordinator.async_request_refresh()
 
     def _update(self, ac_settings, device=None):
-        # hold this to determin the ac mode while it's turned-off
+        # Holding this to determine the AC mode while it's turned-off
         self._remo_mode = ac_settings["mode"]
+        
         try:
             self._target_temperature = float(ac_settings["temp"])
             self._last_target_temperature[self._remo_mode] = ac_settings["temp"]
+
+        # TODO Understand the reason behind the except here and catch the right value
         except:
             self._target_temperature = None
 
