@@ -1,18 +1,4 @@
-import logging
-from datetime import timedelta
-
 from homeassistant.helpers.entity import Entity
-
-
-_LOGGER = logging.getLogger(__name__)
-_API_URL = "https://api.nature.global/1/"
-DOMAIN = "nature_remo"
-
-CONF_COOL_TEMP = "cool_temperature"
-CONF_HEAT_TEMP = "heat_temperature"
-DEFAULT_COOL_TEMP = 28
-DEFAULT_HEAT_TEMP = 20
-DEFAULT_UPDATE_INTERVAL = timedelta(seconds=60)
 
 
 class NatureRemoBase(Entity):

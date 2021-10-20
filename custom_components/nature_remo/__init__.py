@@ -1,21 +1,23 @@
 """The Nature Remo integration."""
+import logging
+from datetime import timedelta
+
 import voluptuous as vol
 from homeassistant.helpers import discovery, config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from homeassistant.const import CONF_ACCESS_TOKEN
 
-from custom_components.nature_remo import DOMAIN
-from custom_components.nature_remo.api.nature_remo_api import NatureRemoAPI
-from custom_components.nature_remo.common import (
-    _LOGGER,
-    DOMAIN,
-    DEFAULT_UPDATE_INTERVAL,
-    CONF_COOL_TEMP,
-    DEFAULT_COOL_TEMP,
-    CONF_HEAT_TEMP,
-    DEFAULT_HEAT_TEMP,
-)
+_LOGGER = logging.getLogger(__name__)
+DOMAIN = "nature_remo"
+
+_API_URL = "https://api.nature.global/1/"
+
+CONF_COOL_TEMP = "cool_temperature"
+CONF_HEAT_TEMP = "heat_temperature"
+DEFAULT_COOL_TEMP = 28
+DEFAULT_HEAT_TEMP = 20
+DEFAULT_UPDATE_INTERVAL = timedelta(seconds=60)
 
 
 CONFIG_SCHEMA = vol.Schema(
@@ -41,6 +43,7 @@ async def async_setup(
     config,
 ):
     """Sets up the Nature Remo integration."""
+    from custom_components.nature_remo.api.nature_remo_api import NatureRemoAPI
 
     _LOGGER.debug("Setting up Nature Remo integration.")
 

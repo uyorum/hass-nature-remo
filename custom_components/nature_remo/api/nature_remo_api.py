@@ -1,4 +1,4 @@
-from custom_components.nature_remo.common import _API_URL, _LOGGER
+from custom_components.nature_remo import _API_URL, _LOGGER
 
 
 class NatureRemoAPI:

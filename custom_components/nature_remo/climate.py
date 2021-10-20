@@ -14,7 +14,8 @@ from homeassistant.components.climate.const import (
 )
 from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
 
-from .common import NatureRemoBase, CONF_COOL_TEMP, CONF_HEAT_TEMP, DOMAIN, _LOGGER
+from . import CONF_COOL_TEMP, CONF_HEAT_TEMP, DOMAIN, _LOGGER
+from .common import NatureRemoBase
 
 SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_FAN_MODE | SUPPORT_SWING_MODE
 
