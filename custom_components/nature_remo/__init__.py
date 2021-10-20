@@ -18,7 +18,7 @@ CONF_HEAT_TEMP = "heat_temperature"
 DEFAULT_COOL_TEMP = 28
 DEFAULT_HEAT_TEMP = 20
 # TODO See if this is too low, English API says 30 requests/minute, JP says 30/5 minutes...
-UPDATE_INTERVAL = timedelta(seconds=10)
+UPDATE_INTERVAL = timedelta(seconds=5)
 
 
 CONFIG_SCHEMA = vol.Schema(

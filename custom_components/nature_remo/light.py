@@ -51,7 +51,7 @@ class NatureRemoLight(LightEntity):
         self,
         appliance: dict,
         api: NatureRemoAPI,
-        update_coordinator: DataUpdateCoordinator,
+        update_coordinator: DataUpdateCoordinator = None,
     ):
         self.api = api
         self.update_coordinator = update_coordinator
@@ -92,8 +92,7 @@ class NatureRemoLight(LightEntity):
         """
         Updates the light status by reading the data in the update coordinator
         """
-        appliances = self.update_coordinator.data["appliances"]
-        appliance = next(a for a in appliances if a.id == self.unique_id)
+        appliance = self.update_coordinator.data["appliances"][self.unique_id]
 
         power = appliance["light"]["state"]["power"]
         self.save_state(power)
