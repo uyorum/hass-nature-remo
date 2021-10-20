@@ -39,6 +39,7 @@ class NatureRemoAPI:
         Gets the list of Remo devices accessible through Nature, as well as their sensors state
         """
         _LOGGER.debug("Fetching devices list from the Nature Remo API.")
+        _LOGGER.warning("Fetching devices list from the Nature Remo API.")
 
         devices_query = self._session.get(f"{_API_URL}/devices", headers=self.headers)
         devices_response = await devices_query

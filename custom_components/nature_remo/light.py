@@ -110,7 +110,7 @@ class NatureRemoLight(CoordinatorEntity, LightEntity):
         # Directly updating it in the coordinator for instant UI feedback
         self.power = "on"
 
-        # await self.appliances_update_coordinator.async_request_refresh()
+        await self.appliances_update_coordinator.async_request_refresh()
 
     async def async_turn_off(self, **kwargs: Any) -> None:
         """
