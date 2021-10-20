@@ -56,4 +56,9 @@ class NatureRemoAPI:
             f"{_API_URL}{path}", data=data, headers=headers
         )
 
+        try:
+            assert response.status == 200
+        except AssertionError:
+            raise aiohttp.ClientError(response)
+
         return await response.json()
