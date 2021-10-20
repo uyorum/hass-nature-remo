@@ -23,10 +23,10 @@ class NatureRemoAPI:
     async def get_appliances_and_devices(self) -> Dict[str, Dict[str, Dict]]:
         """
         Gets new appliances and devices list and states from the API
+            - Device = a Nature device, which holds sensor information
+            - Appliance = a device controlled by IR through a Nature Remo device
 
-        Device = a Nature device, which holds sensor information
-
-        Appliance = a device controlled by IR through a Nature Remo device
+        They are the only two GET endpoints in the API
         """
         _LOGGER.debug("Fetching appliances and devices list from the Nature Remo API.")
 
