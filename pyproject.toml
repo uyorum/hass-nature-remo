@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "home_assistant_nature_remo"
+version = "0.1.0"
+description = "A Nature Remo integration for Home Assistant"
+authors = ["mrtolkien <gary.mialaret@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+nature-remo = "^0.3.3"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.5"
+pytest-asyncio = "^0.16.0"
+
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
