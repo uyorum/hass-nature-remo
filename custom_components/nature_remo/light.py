@@ -65,9 +65,9 @@ class NatureRemoLight(CoordinatorEntity, LightEntity):
         self._name = appliance["nickname"]
         self._appliance_id = appliance["id"]
 
-    # @property
-    # def should_poll(self) -> bool:
-    #     return True
+    @property
+    def should_poll(self) -> bool:
+        return True
 
     @property
     def is_on(self):
