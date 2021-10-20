@@ -94,17 +94,13 @@ class NatureRemoLight(CoordinatorEntity, LightEntity):
         # TODO Take that code out and in the API
         await self.api.post(f"/appliances/{self.unique_id}/light", {"button": "on"})
 
-        # TODO Check if that is needed
-        #   Also see if we can directly update the value without a query?
-        await self.coordinator.async_request_refresh()
+        # TODO see if we can directly update the value without a query, limits are tight
 
     async def async_turn_off(self, **kwargs: Any) -> None:
         """
         Instructs the light to turn off.
         """
         await self.api.post(f"/appliances/{self.unique_id}/light", {"button": "off"})
-
-        await self.coordinator.async_request_refresh()
 
     # @property
     # TODO

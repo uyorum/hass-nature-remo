@@ -265,6 +265,8 @@ class NatureRemoAC(NatureRemoBase, ClimateEntity):
 
     @callback
     def _update_callback(self):
+
+        # TODO I think that should be somewhere else, see _handle_coordinator_update in update_coordinator
         self._update(
             self.appliances_update_coordinator.data[self.unique_id]["settings"],
             self.devices_update_coordinator.data[self._device["id"]],
