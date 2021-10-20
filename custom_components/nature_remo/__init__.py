@@ -60,7 +60,7 @@ async def async_setup(
         _LOGGER,
         name="Nature Remo Appliances Update",
         update_method=api.get_appliances,
-        update_interval=timedelta(60),
+        update_interval=timedelta(seconds=60),
     )
 
     devices_update_coordinator = DataUpdateCoordinator(
@@ -68,7 +68,7 @@ async def async_setup(
         _LOGGER,
         name="Nature Remo Devices Update",
         update_method=api.get_devices,
-        update_interval=timedelta(10),
+        update_interval=timedelta(seconds=10),
     )
 
     await appliances_update_coordinator.async_config_entry_first_refresh()

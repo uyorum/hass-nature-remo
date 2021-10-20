@@ -66,10 +66,6 @@ class NatureRemoLight(CoordinatorEntity, LightEntity):
         self._appliance_id = appliance["id"]
 
     @property
-    def should_poll(self) -> bool:
-        return True
-
-    @property
     def is_on(self):
         """Returns True if light is on."""
         power = self.coordinator.data[self.unique_id]["light"]["state"]["power"]
