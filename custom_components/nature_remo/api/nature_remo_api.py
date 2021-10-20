@@ -17,31 +17,32 @@ class NatureRemoAPI:
         """
         Init API client
         """
-        self._access_token = access_token
+        self.headers = {"Authorization": f"Bearer {access_token}"}
         self._session = session
 
-    async def get_appliances_and_devices(self) -> Dict[str, Dict[str, Dict]]:
+    async def get_appliances(self) -> Dict[str, dict]:
         """
-        Gets new appliances and devices list and states from the API
-            - Device = a Nature device, which holds sensor information
-            - Appliance = a device controlled by IR through a Nature Remo device
-
-        They are the only two GET endpoints in the API
+        Gets the list of IR-controlled appliances accessible through Nature, as well as their state
         """
-        _LOGGER.debug("Fetching appliances and devices list from the Nature Remo API.")
+        _LOGGER.debug("Fetching appliances list from the Nature Remo API.")
 
-        headers = {"Authorization": f"Bearer {self._access_token}"}
-
-        appliances_query = self._session.get(f"{_API_URL}/appliances", headers=headers)
-        devices_query = self._session.get(f"{_API_URL}/devices", headers=headers)
-
+        appliances_query = self._session.get(
+            f"{_API_URL}/appliances", headers=self.headers
+        )
         appliances_response = await appliances_query
+
+        return {x["id"]: x for x in await appliances_response.json()}
+
+    async def get_devices(self) -> Dict[str, dict]:
+        """
+        Gets the list of Remo devices accessible through Nature, as well as their sensors state
+        """
+        _LOGGER.debug("Fetching devices list from the Nature Remo API.")
+
+        devices_query = self._session.get(f"{_API_URL}/devices", headers=self.headers)
         devices_response = await devices_query
 
-        return {
-            "appliances": {x["id"]: x for x in await appliances_response.json()},
-            "devices": {x["id"]: x for x in await devices_response.json()},
-        }
+        return {x["id"]: x for x in await devices_response.json()}
 
     async def post(
         self,
@@ -51,9 +52,8 @@ class NatureRemoAPI:
         """Emits a POST request to the API and returns it serialized."""
         _LOGGER.debug("Trying to request post:%s, data:%s", path, data)
 
-        headers = {"Authorization": f"Bearer {self._access_token}"}
         response = await self._session.post(
-            f"{_API_URL}{path}", data=data, headers=headers
+            f"{_API_URL}{path}", data=data, headers=self.headers
         )
 
         try:

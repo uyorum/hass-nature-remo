@@ -13,7 +13,6 @@ async def test_get_appliances(hass):
         async_get_clientsession(hass),
     )
 
-    data = await api.get_appliances_and_devices()
+    devices = await api.get_devices()
 
-    assert data["appliances"]
-    assert data["devices"]
+    assert devices

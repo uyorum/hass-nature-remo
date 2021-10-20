@@ -2,11 +2,11 @@ from . import DOMAIN
 from homeassistant.helpers.entity import Entity
 
 
+# TODO Rework, re-use
 class NatureRemoBase(Entity):
     """Nature Remo entity base class."""
 
-    def __init__(self, coordinator, appliance):
-        self._coordinator = coordinator
+    def __init__(self, appliance):
         self._name = f"Nature Remo {appliance['nickname']}"
         self._appliance_id = appliance["id"]
         self._device = appliance["device"]

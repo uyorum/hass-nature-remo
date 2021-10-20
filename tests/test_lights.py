@@ -13,11 +13,11 @@ async def test_get_appliances(hass):
         async_get_clientsession(hass),
     )
 
-    data = await api.get_appliances_and_devices()
+    appliances = await api.get_appliances()
 
     lights = [
         NatureRemoLight(appliance, api, None)
-        for appliance in data["appliances"].values()
+        for appliance in appliances.values()
         if appliance["type"] == "LIGHT"
     ]
 

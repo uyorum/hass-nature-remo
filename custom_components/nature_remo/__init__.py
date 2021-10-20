@@ -17,10 +17,6 @@ CONF_COOL_TEMP = "cool_temperature"
 CONF_HEAT_TEMP = "heat_temperature"
 DEFAULT_COOL_TEMP = 28
 DEFAULT_HEAT_TEMP = 20
-# TODO Contact devs: English API says 30 requests/minute, JP says 30/5 minutes
-#   It seems JP page is right, but too low
-UPDATE_INTERVAL = timedelta(seconds=30)
-
 
 CONFIG_SCHEMA = vol.Schema(
     {
@@ -56,24 +52,39 @@ async def async_setup(
     )
 
     # This is an object that will periodically refresh its values, allowing us to read sensors and appliances states
-    coordinator = hass.data[DOMAIN] = DataUpdateCoordinator(
+    # TODO Contact devs: English API says 30 requests/minute, JP says 30/5 minutes
+    #   It seems JP page is right, but it's way too low
+
+    appliances_update_coordinator = DataUpdateCoordinator(
         hass,
         _LOGGER,
         name="Nature Remo update",
-        update_method=api.get_appliances_and_devices,
-        update_interval=UPDATE_INTERVAL,
+        update_method=api.get_appliances,
+        update_interval=timedelta(60),
     )
 
-    await coordinator.async_refresh()
+    devices_update_coordinator = DataUpdateCoordinator(
+        hass,
+        _LOGGER,
+        name="Nature Remo update",
+        update_method=api.get_devices,
+        update_interval=timedelta(10),
+    )
+
+    await appliances_update_coordinator.async_refresh()
+    await devices_update_coordinator.async_refresh()
 
     hass.data[DOMAIN] = {
         "api": api,
-        "coordinator": coordinator,
+        "devices_update_coordinator": devices_update_coordinator,
+        "appliances_update_coordinator": appliances_update_coordinator,
         # TODO Check why we need to save config, it seems unnecessary to me and unsafe
         "config": config[DOMAIN],
     }
 
-    await discovery.async_load_platform(hass, "sensor", DOMAIN, {}, config)
+    # TODO I don't test this at the moment
+    # await discovery.async_load_platform(hass, "sensor", DOMAIN, {}, config)
+
     await discovery.async_load_platform(hass, "climate", DOMAIN, {}, config)
     await discovery.async_load_platform(hass, "light", DOMAIN, {}, config)
 

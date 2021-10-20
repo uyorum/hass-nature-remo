@@ -43,15 +43,23 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     if discovery_info is None:
         return
     _LOGGER.debug("Setting up climate platform.")
-    update_coordinator = hass.data[DOMAIN]["coordinator"]
+
+    devices_update_coordinator = hass.data[DOMAIN]["devices_update_coordinator"]
+    appliances_update_coordinator = hass.data[DOMAIN]["appliances_update_coordinator"]
+
     api = hass.data[DOMAIN]["api"]
     config = hass.data[DOMAIN]["config"]
-    appliances = update_coordinator.data["appliances"]
 
     async_add_entities(
         [
-            NatureRemoAC(update_coordinator, api, appliance, config)
-            for appliance in appliances.values()
+            NatureRemoAC(
+                devices_update_coordinator,
+                appliances_update_coordinator,
+                api,
+                appliance,
+                config,
+            )
+            for appliance in appliances_update_coordinator.data.values()
             if appliance["type"] == "AC"
         ]
     )
@@ -60,9 +68,21 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 class NatureRemoAC(NatureRemoBase, ClimateEntity):
     """Implementation of a Nature Remo E AC."""
 
-    def __init__(self, coordinator, api, appliance, config):
-        super().__init__(coordinator, appliance)
-        self._api = api
+    def __init__(
+        self,
+        devices_update_coordinator,
+        appliances_update_coordinator,
+        api,
+        appliance,
+        config,
+    ):
+        super().__init__(appliance)
+
+        self.devices_update_coordinator = devices_update_coordinator
+        self.appliances_update_coordinator = appliances_update_coordinator
+
+        self.api = api
+
         self._default_temp = {
             HVAC_MODE_COOL: config[CONF_COOL_TEMP],
             HVAC_MODE_HEAT: config[CONF_HEAT_TEMP],
@@ -203,7 +223,7 @@ class NatureRemoAC(NatureRemoBase, ClimateEntity):
     async def async_added_to_hass(self):
         """Subscribe to updates."""
         self.async_on_remove(
-            self._coordinator.async_add_listener(self._update_callback)
+            self.appliances_update_coordinator.async_add_listener(self._update_callback)
         )
 
     async def async_update(self):
@@ -211,7 +231,9 @@ class NatureRemoAC(NatureRemoBase, ClimateEntity):
 
         Only used by the generic entity update service.
         """
-        await self._coordinator.async_request_refresh()
+        pass
+        # TODO See if that is really needed here
+        await self.appliances_update_coordinator.async_request_refresh()
 
     def _update(self, ac_settings, device=None):
         # Holding this to determine the AC mode while it's turned-off
@@ -239,14 +261,15 @@ class NatureRemoAC(NatureRemoBase, ClimateEntity):
     @callback
     def _update_callback(self):
         self._update(
-            self._coordinator.data["appliances"][self._appliance_id]["settings"],
-            self._coordinator.data["devices"][self._device["id"]],
+            self.appliances_update_coordinator.data[self._appliance_id]["settings"],
+            self.devices_update_coordinator.data[self._device["id"]],
         )
         self.async_write_ha_state()
 
     async def _post(self, data):
-        response = await self._api.post(
-            f"/appliances/{self._appliance_id}/aircon_settings", data
+        response = await self.api.post(
+            f"/appliances/{self._appliance_id}/aircon_settings",
+            data,
         )
         self._update(response)
         self.async_write_ha_state()

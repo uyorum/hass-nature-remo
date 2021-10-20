@@ -28,15 +28,15 @@ async def async_setup_platform(
 
     _LOGGER.debug("Setting up Nature Remo lights platform.")
 
-    update_coordinator = hass.data[DOMAIN]["coordinator"]
-    appliances = update_coordinator.data["appliances"]
+    appliances_update_coordinator = hass.data[DOMAIN]["appliances_update_coordinator"]
+    appliances = appliances_update_coordinator.data["appliances"]
 
     add_entities(
         [
             NatureRemoLight(
                 appliance,
                 hass.data[DOMAIN]["api"],
-                update_coordinator,
+                appliances_update_coordinator,
             )
             for appliance in appliances.values()
             if appliance["type"] == "LIGHT"
@@ -84,6 +84,22 @@ class NatureRemoLight(LightEntity):
         return self._appliance_id
 
     @property
+    def appliance(self):
+        return self.update_coordinator.data[self.unique_id]
+
+    @property
+    def power(self):
+        return self.appliance["light"]["state"]["power"]
+
+    @power.setter
+    def power(self, value):
+        # TODO Remove try/catch, here because test don't have a coordinator
+        try:
+            self.appliance["light"]["state"]["power"] = value
+        except AttributeError:
+            pass
+
+    @property
     def is_on(self) -> bool | None:
         """Returns True if light is on."""
         return self._is_on
@@ -92,24 +108,25 @@ class NatureRemoLight(LightEntity):
         """
         Updates the light status by reading the data in the update coordinator
         """
-        appliance = self.update_coordinator.data["appliances"][self.unique_id]
-
-        power = appliance["light"]["state"]["power"]
-        self.save_state(power)
+        self.save_state(self.power)
 
     async def async_turn_on(self, **kwargs: Any) -> None:
         """
         Instructs the light to turn on.
         """
         await self.api.post(f"/appliances/{self.unique_id}/light", {"button": "on"})
-        self._is_on = True
+
+        # Directly updating it in the coordinator for instant UI feedback
+        self.power = "on"
 
     async def async_turn_off(self, **kwargs: Any) -> None:
         """
         Instructs the light to turn off.
         """
         await self.api.post(f"/appliances/{self.unique_id}/light", {"button": "off"})
-        self._is_on = False
+
+        # Directly updating it in the coordinator for instant UI feedback
+        self.power = "off"
 
     # @property
     # TODO
