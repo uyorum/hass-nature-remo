@@ -264,7 +264,7 @@ class NatureRemoAC(NatureRemoBase, ClimateEntity):
     @callback
     def _update_callback(self):
         # TODO REMOVE
-        print("UPDATE CALLBACK")
+        _LOGGER.warning("UPDATE CALLBACK")
 
         self._update(
             self.appliances_update_coordinator.data[self.unique_id]["settings"],
