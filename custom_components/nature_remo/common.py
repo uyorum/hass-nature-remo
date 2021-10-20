@@ -1,9 +1,6 @@
 import logging
 from datetime import timedelta
-import voluptuous as vol
 
-from homeassistant.const import CONF_ACCESS_TOKEN
-from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.entity import Entity
 
 
@@ -16,22 +13,6 @@ CONF_HEAT_TEMP = "heat_temperature"
 DEFAULT_COOL_TEMP = 28
 DEFAULT_HEAT_TEMP = 20
 DEFAULT_UPDATE_INTERVAL = timedelta(seconds=60)
-CONFIG_SCHEMA = vol.Schema(
-    {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_ACCESS_TOKEN): cv.string,
-                vol.Optional(CONF_COOL_TEMP, default=DEFAULT_COOL_TEMP): vol.Coerce(
-                    int
-                ),
-                vol.Optional(CONF_HEAT_TEMP, default=DEFAULT_HEAT_TEMP): vol.Coerce(
-                    int
-                ),
-            }
-        )
-    },
-    extra=vol.ALLOW_EXTRA,
-)
 
 
 class NatureRemoBase(Entity):

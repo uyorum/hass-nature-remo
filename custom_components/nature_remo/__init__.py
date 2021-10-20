@@ -1,15 +1,38 @@
 """The Nature Remo integration."""
-
-from homeassistant.helpers import discovery
+import voluptuous as vol
+from homeassistant.helpers import discovery, config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from homeassistant.const import CONF_ACCESS_TOKEN
 
+from custom_components.nature_remo import DOMAIN
 from custom_components.nature_remo.api.nature_remo_api import NatureRemoAPI
 from custom_components.nature_remo.common import (
     _LOGGER,
     DOMAIN,
     DEFAULT_UPDATE_INTERVAL,
+    CONF_COOL_TEMP,
+    DEFAULT_COOL_TEMP,
+    CONF_HEAT_TEMP,
+    DEFAULT_HEAT_TEMP,
+)
+
+
+CONFIG_SCHEMA = vol.Schema(
+    {
+        DOMAIN: vol.Schema(
+            {
+                vol.Required(CONF_ACCESS_TOKEN): cv.string,
+                vol.Optional(CONF_COOL_TEMP, default=DEFAULT_COOL_TEMP): vol.Coerce(
+                    int
+                ),
+                vol.Optional(CONF_HEAT_TEMP, default=DEFAULT_HEAT_TEMP): vol.Coerce(
+                    int
+                ),
+            }
+        )
+    },
+    extra=vol.ALLOW_EXTRA,
 )
 
 
