@@ -88,11 +88,11 @@ class NatureRemoLight(LightEntity):
         """Fetch new state data for this light.
         This is the only method that should fetch new data for Home Assistant.
         """
+        ...
         # TODO Cache the response and make this common to all platforms of this integration
-        appliances = self._api.get_appliances()
-        appliance = next(a for a in appliances if a.id == self.unique_id)
-
-        self.save_state(appliance.light.state.power)
+        # appliances = self._api.get_appliances()
+        # appliance = next(a for a in appliances if a.id == self.unique_id)
+        # self.save_state(appliance.light.state.power)
 
     def turn_on(self, **kwargs: Any) -> None:
         """Instruct the light to turn on.
