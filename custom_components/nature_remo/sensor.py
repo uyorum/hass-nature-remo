@@ -88,7 +88,7 @@ async def async_setup_platform(
 
 
 # TODO Common code with NatureRemoSensor
-class NatureRemoBinarySensor(BinarySensorEntity): #, CoordinatorEntity):
+class NatureRemoBinarySensor(BinarySensorEntity, CoordinatorEntity):
     def __init__(
         self,
         coordinator: DataUpdateCoordinator,
@@ -98,7 +98,7 @@ class NatureRemoBinarySensor(BinarySensorEntity): #, CoordinatorEntity):
         # We don't need to have an API object in that one as the updating is fully done through the coordinator
 
         # Calling the CoordinatorEntity constructor which adds listeners and self.coordinator
-        # super().__init__(coordinator)
+        super().__init__(coordinator)
 
         # Concatenating the device name and sensor type
         self._name = f"{device['name']} - {binary_sensor_class[sensor_type]}"
@@ -135,9 +135,6 @@ class NatureRemoBinarySensor(BinarySensorEntity): #, CoordinatorEntity):
 
     @property
     def is_on(self):
-        # TODO REMOVE
-        return True
-
         # Not entirely sure how this works, but currently it is *always* 1
         #   Adding some logging to make sure I'm not missing something
         if self.sensor_data["val"] != 1:
