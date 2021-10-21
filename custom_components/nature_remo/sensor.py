@@ -109,4 +109,4 @@ class NatureRemoSensor(CoordinatorEntity, SensorEntity):
     def native_value(self) -> StateType:
         return self.coordinator.data[self._device_id]["newest_events"][
             self._sensor_type
-        ]
+        ]["val"]
