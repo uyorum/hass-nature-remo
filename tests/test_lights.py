@@ -16,7 +16,7 @@ async def test_get_appliances(hass):
     appliances = await api.get_appliances()
 
     lights = [
-        NatureRemoLight(appliance, api, None)
+        NatureRemoLight(None, appliance, api)
         for appliance in appliances.values()
         if appliance["type"] == "LIGHT"
     ]

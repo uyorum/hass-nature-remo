@@ -1,14 +1,16 @@
 from __future__ import annotations
 
-from homeassistant.components.sensor import SensorEntity
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import ConfigType
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.typing import DiscoveryInfoType, StateType
+from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType, StateType
+
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
     DataUpdateCoordinator,
 )
+
+from homeassistant.components.sensor import SensorEntity
+
 
 from . import DOMAIN, _LOGGER
 
