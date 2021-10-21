@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+from datetime import datetime, timedelta
+
+import pytz
 from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -94,7 +97,21 @@ class NatureRemoBinarySensor(CoordinatorEntity, BinarySensorEntity):
 
         # device.id cannot unique id in itself as there are multiple sensors per device
         self._device_id = device["id"]
+
         self._sensor_type = sensor_type
+
+    def latest_event_datetime(self) -> datetime:
+        return datetime.fromisoformat(
+            # Cutting the Z at the end and adding +00:00 as it's how python does it
+            self.sensor_data["created_at"][:-1]
+            + "+00:00"
+        )
+
+    @property
+    def sensor_data(self):
+        return self.coordinator.data[self._device_id]["newest_events"][
+            self._sensor_type
+        ]
 
     @property
     def name(self):
@@ -110,11 +127,19 @@ class NatureRemoBinarySensor(CoordinatorEntity, BinarySensorEntity):
 
     @property
     def is_on(self):
-        val = self.coordinator.data[self._device_id]["newest_events"][
-            self._sensor_type
-        ]["val"]
+        # Not entirely sure how this works, but currently it is *always* 1
+        #   Adding some logging to make sure I'm not missing something
+        if self.sensor_data["val"] != 1:
+            _LOGGER.warning(
+                f"Issue with Nature Remo Motion Sensor\n\t\t{self.sensor_data=}"
+            )
+            return False
 
-        if val > 0:
+        # From what I understand, we only know the last time motion was detected
+        #   We return True if movement was detected in the last minute, False otherwise
+        if datetime.now(pytz.UTC) - self.latest_event_datetime() < timedelta(
+            seconds=60
+        ):
             return True
         else:
             return False
