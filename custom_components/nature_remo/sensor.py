@@ -133,16 +133,16 @@ class NatureRemoBinarySensor(CoordinatorEntity, BinarySensorEntity):
             _LOGGER.warning(
                 f"Issue with Nature Remo Motion Sensor\n\t\t{self.sensor_data=}"
             )
-            return False
+            return None
 
         # From what I understand, we only know the last time motion was detected
         #   We return True if movement was detected in the last minute, False otherwise
         if datetime.now(pytz.UTC) - self.latest_event_datetime() < timedelta(
             seconds=60
         ):
-            return True
+            return "on"
         else:
-            return False
+            return "off"
 
 
 class NatureRemoSensor(CoordinatorEntity, SensorEntity):
