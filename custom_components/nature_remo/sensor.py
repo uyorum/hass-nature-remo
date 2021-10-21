@@ -140,9 +140,9 @@ class NatureRemoBinarySensor(CoordinatorEntity, BinarySensorEntity):
         if datetime.now(pytz.UTC) - self.latest_event_datetime() < timedelta(
             seconds=60
         ):
-            return "on"
+            return True
         else:
-            return "off"
+            return False
 
 
 class NatureRemoSensor(CoordinatorEntity, SensorEntity):
