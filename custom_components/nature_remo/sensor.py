@@ -90,7 +90,7 @@ class NatureRemoBinarySensor(CoordinatorEntity, BinarySensorEntity):
         super(NatureRemoBinarySensor, self).__init__(coordinator)
 
         # Concatenating the device name and sensor type
-        self._name = f"{device['name']} - {sensor_class[sensor_type]}"
+        self._name = f"{device['name']} - {binary_sensor_class[sensor_type]}"
 
         # device.id cannot unique id in itself as there are multiple sensors per device
         self._device_id = device["id"]
