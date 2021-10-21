@@ -3,7 +3,15 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 
 import pytz
-from homeassistant.components.binary_sensor import BinarySensorEntity
+from homeassistant.components.binary_sensor import (
+    BinarySensorEntity,
+    DEVICE_CLASS_MOTION,
+)
+from homeassistant.const import (
+    DEVICE_CLASS_HUMIDITY,
+    DEVICE_CLASS_ILLUMINANCE,
+    DEVICE_CLASS_TEMPERATURE,
+)
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType, StateType
@@ -21,13 +29,13 @@ from . import DOMAIN, _LOGGER
 
 # TODO Move the data out in its own class too
 sensor_class = {
-    "hu": "humidity",
-    "il": "illuminance",
-    "te": "temperature",
+    "hu": DEVICE_CLASS_HUMIDITY,
+    "il": DEVICE_CLASS_ILLUMINANCE,
+    "te": DEVICE_CLASS_TEMPERATURE,
 }
 
 binary_sensor_class = {
-    "mo": "motion",
+    "mo": DEVICE_CLASS_MOTION,
 }
 
 sensor_units = {
@@ -100,12 +108,17 @@ class NatureRemoBinarySensor(BinarySensorEntity, CoordinatorEntity):
 
         self._sensor_type = sensor_type
 
-    def latest_event_datetime(self) -> datetime:
-        return datetime.fromisoformat(
-            # Cutting the Z at the end and adding +00:00 as it's how python does it
-            self.sensor_data["created_at"][:-1]
-            + "+00:00"
-        )
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def unique_id(self) -> str:
+        return f"{self._device_id}-{self._sensor_type}"
+
+    @property
+    def device_class(self) -> str:
+        return binary_sensor_class[self._sensor_type]
 
     @property
     def sensor_data(self):
@@ -113,17 +126,12 @@ class NatureRemoBinarySensor(BinarySensorEntity, CoordinatorEntity):
             self._sensor_type
         ]
 
-    @property
-    def name(self):
-        return self._name
-
-    @property
-    def unique_id(self) -> str | None:
-        return f"{self._device_id}-{self._sensor_type}"
-
-    @property
-    def device_class(self) -> str | None:
-        return binary_sensor_class[self._sensor_type]
+    def latest_event_datetime(self) -> datetime:
+        return datetime.fromisoformat(
+            # Cutting the Z at the end and adding +00:00 as it's how python does it
+            self.sensor_data["created_at"][:-1]
+            + "+00:00"
+        )
 
     @property
     def is_on(self):
