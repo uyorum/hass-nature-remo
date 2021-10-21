@@ -5,7 +5,7 @@ from custom_components.nature_remo import _API_URL, _LOGGER
 
 
 class NatureRemoAPI:
-    """
+    """Upping update interval to 15s to not hit API limits
     Nature Remo API client
     """
 
