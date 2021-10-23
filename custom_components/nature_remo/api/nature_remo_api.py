@@ -17,7 +17,11 @@ class NatureRemoAPI:
         """
         Init API client
         """
-        self.headers = {"Authorization": f"Bearer {access_token}"}
+        self.headers = {
+            "Accept": "application/json",
+            "Authorization": f"Bearer {access_token}",
+        }
+
         self._session = session
 
     async def get_appliances(self) -> Dict[str, dict]:
@@ -27,7 +31,7 @@ class NatureRemoAPI:
         _LOGGER.debug("Fetching appliances from the Nature Remo API.")
 
         appliances_query = self._session.get(
-            f"{_API_URL}/appliances", headers=self.headers
+            f"{_API_URL}appliances", headers=self.headers
         )
         appliances_response = await appliances_query
 
@@ -39,7 +43,7 @@ class NatureRemoAPI:
         """
         _LOGGER.debug("Fetching devices from the Nature Remo API.")
 
-        devices_query = self._session.get(f"{_API_URL}/devices", headers=self.headers)
+        devices_query = self._session.get(f"{_API_URL}devices", headers=self.headers)
         devices_response = await devices_query
 
         return {x["id"]: x for x in await devices_response.json()}
@@ -51,7 +55,8 @@ class NatureRemoAPI:
     ) -> dict:
         """Emits a POST request to the API and returns it serialized."""
         _LOGGER.debug("Trying to request post:%s, data:%s", path, data)
-
+        
+        # TODO add / before the path once again
         response = await self._session.post(
             f"{_API_URL}{path}", data=data, headers=self.headers
         )
