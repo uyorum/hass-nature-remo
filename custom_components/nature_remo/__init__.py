@@ -48,7 +48,7 @@ async def async_setup(
     # Creating integration-global objects
     api = NatureRemoAPI(
         config[DOMAIN][CONF_ACCESS_TOKEN],
-        async_get_clientsession(hass),
+        async_get_clientsession(hass, verify_ssl=False),
     )
 
     # This is an object that will periodically refresh its values, allowing us to read sensors and appliances states
