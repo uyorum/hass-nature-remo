@@ -82,9 +82,7 @@ async def async_setup(
         "config": config[DOMAIN],
     }
 
-    # TODO I don't test this at the moment
-    # await discovery.async_load_platform(hass, "sensor", DOMAIN, {}, config)
-
+    await discovery.async_load_platform(hass, "sensor", DOMAIN, {}, config)
     await discovery.async_load_platform(hass, "climate", DOMAIN, {}, config)
     await discovery.async_load_platform(hass, "light", DOMAIN, {}, config)
 
