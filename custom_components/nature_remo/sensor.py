@@ -56,7 +56,7 @@ class NatureRemoESensor(NatureRemoBase, SensorEntity):
         "reverse_direction_cumulative_electric_energy": {
             "device_class": DEVICE_CLASS_ENERGY,
             "unit": ENERGY_KILO_WATT_HOUR,
-            "state_class": "measurement",
+            "state_class": "total_increasing",
         },
     }
 
