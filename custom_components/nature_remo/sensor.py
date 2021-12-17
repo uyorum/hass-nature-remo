@@ -44,16 +44,19 @@ class NatureRemoESensor(NatureRemoBase, SensorEntity):
 
     SENSOR_TYPES = {
         "measured_instantaneous": {
+            "name": "Instantaneous consumption",
             "device_class": DEVICE_CLASS_POWER,
             "unit": POWER_WATT,
             "state_class": "measurement",
         },
         "normal_direction_cumulative_electric_energy": {
+            "name": "Consumption",
             "device_class": DEVICE_CLASS_ENERGY,
             "unit": ENERGY_KILO_WATT_HOUR,
             "state_class": "total_increasing",
         },
         "reverse_direction_cumulative_electric_energy": {
+            "name": "Return",
             "device_class": DEVICE_CLASS_ENERGY,
             "unit": ENERGY_KILO_WATT_HOUR,
             "state_class": "total_increasing",
@@ -68,7 +71,7 @@ class NatureRemoESensor(NatureRemoBase, SensorEntity):
     ):
         super().__init__(appliance)
 
-        self._name = f"{appliance['nickname']} {sensor_type}"
+        self._name = f"{appliance['nickname']} {self.SENSOR_TYPES[sensor_type]['name']}"
         self._appliance_id = appliance["id"]
         self._coordinator = coordinator
         self._device_class = self.SENSOR_TYPES[sensor_type]["device_class"]
