@@ -1,0 +1,20 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Nature Remo Integration Setup",
+                "description": "Enter your Nature Remo access token. You can generate one at https://home.nature.global/",
+                "data": {
+                    "access_token": "Access Token"
+                }
+            }
+        },
+        "error": {
+            "cannot_connect": "Failed to connect to Nature Remo API",
+            "invalid_auth": "Invalid access token"
+        },
+        "abort": {
+            "already_configured": "Account is already configured"
+        }
+    }
+}

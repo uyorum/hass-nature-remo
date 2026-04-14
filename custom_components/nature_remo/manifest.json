@@ -1,0 +1,12 @@
+{
+  "domain": "nature_remo",
+  "name": "Nature Remo",
+  "codeowners": ["@uyorum"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/uyorum/hass-nature-remo",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/uyorum/hass-nature-remo/issues",
+  "requirements": ["aiohttp>=3.8.0"],
+  "version": "1.0.0"
+}

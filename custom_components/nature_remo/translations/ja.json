@@ -1,0 +1,20 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Nature Remoのセットアップ",
+                "description": "Nature Remoのアクセストークンを入力してください。トークンは https://home.nature.global/ から発行できます。",
+                "data": {
+                    "access_token": "アクセストークン"
+                }
+            }
+        },
+        "error": {
+            "cannot_connect": "Nature Remo APIへの接続に失敗しました",
+            "invalid_auth": "アクセストークンが無効です"
+        },
+        "abort": {
+            "already_configured": "すでに設定されています"
+        }
+    }
+}
