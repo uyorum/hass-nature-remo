@@ -1,5 +1,8 @@
 # hass-nature-remo
 
+[![Validate with hassfest](https://github.com/uyorum/hass-nature-remo/actions/workflows/hassfest.yaml/badge.svg)](https://github.com/uyorum/hass-nature-remo/actions/workflows/hassfest.yaml)
+[![Validate with HACS](https://github.com/uyorum/hass-nature-remo/actions/workflows/hacs.yaml/badge.svg)](https://github.com/uyorum/hass-nature-remo/actions/workflows/hacs.yaml)
+
 Home Assistant Custom Component for Nature Remo & Nature Remo E / E lite.
 
 This integration uses the official Nature Remo Cloud API and utilizes a `DataUpdateCoordinator` to gracefully respect the API's tight rate limitations (polls are comfortably spaced at 60 seconds).

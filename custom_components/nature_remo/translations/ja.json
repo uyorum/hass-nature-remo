@@ -3,7 +3,7 @@
         "step": {
             "user": {
                 "title": "Nature Remoのセットアップ",
-                "description": "Nature Remoのアクセストークンを入力してください。トークンは https://home.nature.global/ から発行できます。",
+                "description": "Nature Remoのアクセストークンを入力してください。トークンは [home.nature.global]({url}) から発行できます。",
                 "data": {
                     "access_token": "アクセストークン"
                 }

@@ -3,7 +3,7 @@
         "step": {
             "user": {
                 "title": "Nature Remo Integration Setup",
-                "description": "Enter your Nature Remo access token. You can generate one at https://home.nature.global/",
+                "description": "Enter your Nature Remo access token. You can generate one at [home.nature.global]({url})",
                 "data": {
                     "access_token": "Access Token"
                 }
