@@ -16,8 +16,8 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.helpers.device_registry import DeviceInfo
-
 from .const import DOMAIN
+from .coordinator import NatureRemoDataUpdateCoordinator
 
 SENSOR_TYPES = {
     "te": {
@@ -51,7 +51,7 @@ async def async_setup_entry(
     """Set up Nature Remo sensor platform."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
 
-    entities = []
+    entities: list[SensorEntity] = []
 
     # 1. Remo Device Sensors
     for device in coordinator.data["devices"]:
@@ -74,7 +74,7 @@ async def async_setup_entry(
 class NatureRemoDeviceSensor(CoordinatorEntity, SensorEntity):
     """Implementation of a Nature Remo device sensor."""
 
-    def __init__(self, coordinator, device, sensor_id):
+    def __init__(self, coordinator: NatureRemoDataUpdateCoordinator, device, sensor_id):
         """Initialize the sensor."""
         super().__init__(coordinator)
         self._device = device
@@ -128,7 +128,7 @@ class NatureRemoDeviceSensor(CoordinatorEntity, SensorEntity):
 class NatureRemoSmartMeterSensor(CoordinatorEntity, SensorEntity):
     """Implementation of a Nature Remo E Lite smart meter sensor."""
 
-    def __init__(self, coordinator, appliance, property_name):
+    def __init__(self, coordinator: NatureRemoDataUpdateCoordinator, appliance, property_name):
         """Initialize."""
         super().__init__(coordinator)
         self._appliance = appliance

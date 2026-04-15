@@ -10,8 +10,8 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.helpers.device_registry import DeviceInfo
-
 from .const import DOMAIN
+from .coordinator import NatureRemoDataUpdateCoordinator
 
 HA_TO_REMO_MODE = {
     HVACMode.AUTO: "auto",
@@ -44,7 +44,7 @@ class NatureRemoClimate(CoordinatorEntity, ClimateEntity):
         ClimateEntityFeature.TARGET_TEMPERATURE
     )
 
-    def __init__(self, coordinator, appliance):
+    def __init__(self, coordinator: NatureRemoDataUpdateCoordinator, appliance):
         """Initialize the climate entity."""
         super().__init__(coordinator)
         self._appliance = appliance

@@ -16,6 +16,8 @@ PLATFORMS: list[Platform] = [
     Platform.MEDIA_PLAYER,
 ]
 
+from homeassistant.helpers import device_registry as dr
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Nature Remo from a config entry."""
     session = async_get_clientsession(hass)
@@ -27,6 +29,20 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     await coordinator.async_config_entry_first_refresh()
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
+
+    # Register all physical devices (Hubs) explicitly into the Device Registry.
+    # This ensures that devices without sensors (like Remo E lite) are still visible
+    # and that appliances can correctly link to them using `via_device`.
+    device_registry = dr.async_get(hass)
+    for device in coordinator.data["devices"]:
+        device_registry.async_get_or_create(
+            config_entry_id=entry.entry_id,
+            identifiers={(DOMAIN, device["id"])},
+            name=device.get("name", "Nature Remo Device"),
+            manufacturer="Nature Inc.",
+            model=device.get("firmware_version", "Nature Remo"),
+            sw_version=device.get("firmware_version"),
+        )
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 

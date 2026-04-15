@@ -9,8 +9,8 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.helpers.device_registry import DeviceInfo
-
 from .const import DOMAIN
+from .coordinator import NatureRemoDataUpdateCoordinator
 
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
@@ -37,7 +37,7 @@ class NatureRemoTV(CoordinatorEntity, MediaPlayerEntity):
         | MediaPlayerEntityFeature.PREVIOUS_TRACK
     )
 
-    def __init__(self, coordinator, appliance):
+    def __init__(self, coordinator: NatureRemoDataUpdateCoordinator, appliance):
         """Initialize."""
         super().__init__(coordinator)
         self._appliance = appliance

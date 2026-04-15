@@ -5,8 +5,8 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.helpers.device_registry import DeviceInfo
-
 from .const import DOMAIN
+from .coordinator import NatureRemoDataUpdateCoordinator
 
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
@@ -14,7 +14,7 @@ async def async_setup_entry(
     """Set up Nature Remo button platform."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
 
-    entities = []
+    entities: list[ButtonEntity] = []
     for appliance in coordinator.data["appliances"]:
         # Custom IR devices often have the type "IR"
         if "signals" in appliance:
@@ -35,7 +35,7 @@ async def async_setup_entry(
 class NatureRemoSignalButton(CoordinatorEntity, ButtonEntity):
     """Implementation of a Nature Remo IR signal as a button."""
 
-    def __init__(self, coordinator, appliance, signal):
+    def __init__(self, coordinator: NatureRemoDataUpdateCoordinator, appliance, signal):
         """Initialize."""
         super().__init__(coordinator)
         self._appliance = appliance
@@ -64,7 +64,7 @@ class NatureRemoApplianceButton(CoordinatorEntity, ButtonEntity):
 
     _attr_has_entity_name = True
 
-    def __init__(self, coordinator, appliance, button_name):
+    def __init__(self, coordinator: NatureRemoDataUpdateCoordinator, appliance, button_name):
         """Initialize."""
         super().__init__(coordinator)
         self._appliance = appliance
