@@ -6,6 +6,9 @@ on:
       - main
       - master
   pull_request:
+  schedule:
+    # 毎週日曜日の深夜0時(UTC)に実行
+    - cron: "0 0 * * 0"
 
 jobs:
   hassfest:
