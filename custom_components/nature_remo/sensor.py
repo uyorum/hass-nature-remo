@@ -1,4 +1,5 @@
 """Sensor platform for Nature Remo."""
+from typing import cast
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
@@ -71,21 +72,22 @@ async def async_setup_entry(
     async_add_entities(entities)
 
 
-class NatureRemoDeviceSensor(CoordinatorEntity, SensorEntity):
+class NatureRemoDeviceSensor(CoordinatorEntity[NatureRemoDataUpdateCoordinator], SensorEntity):
     """Implementation of a Nature Remo device sensor."""
 
     def __init__(self, coordinator: NatureRemoDataUpdateCoordinator, device, sensor_id):
         """Initialize the sensor."""
         super().__init__(coordinator)
+        self.coordinator = coordinator
         self._device = device
         self._sensor_id = sensor_id
         
         sensor_info = SENSOR_TYPES[sensor_id]
         self._attr_name = f"{device['name']} {sensor_info.get('name', sensor_id)}"
         self._attr_unique_id = f"{device['id']}-{sensor_id}"
-        self._attr_device_class = sensor_info.get("device_class")
-        self._attr_native_unit_of_measurement = sensor_info.get("unit")
-        self._attr_state_class = sensor_info.get("state_class")
+        self._attr_device_class = sensor_info.get("device_class")  # type: ignore[assignment]
+        self._attr_native_unit_of_measurement = sensor_info.get("unit")  # type: ignore[assignment]
+        self._attr_state_class = sensor_info.get("state_class")  # type: ignore[assignment]
 
     @property
     def device_info(self) -> DeviceInfo:
@@ -125,12 +127,13 @@ class NatureRemoDeviceSensor(CoordinatorEntity, SensorEntity):
         return None
 
 
-class NatureRemoSmartMeterSensor(CoordinatorEntity, SensorEntity):
+class NatureRemoSmartMeterSensor(CoordinatorEntity[NatureRemoDataUpdateCoordinator], SensorEntity):
     """Implementation of a Nature Remo E Lite smart meter sensor."""
 
     def __init__(self, coordinator: NatureRemoDataUpdateCoordinator, appliance, property_name):
         """Initialize."""
         super().__init__(coordinator)
+        self.coordinator = coordinator
         self._appliance = appliance
         self._property_name = property_name
 

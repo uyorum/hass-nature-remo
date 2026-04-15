@@ -22,7 +22,7 @@ async def async_setup_entry(
     async_add_entities(entities)
 
 
-class NatureRemoLight(CoordinatorEntity, LightEntity):
+class NatureRemoLight(CoordinatorEntity[NatureRemoDataUpdateCoordinator], LightEntity):
     """Implementation of a Nature Remo light."""
 
     _attr_has_entity_name = True
@@ -33,6 +33,7 @@ class NatureRemoLight(CoordinatorEntity, LightEntity):
     def __init__(self, coordinator: NatureRemoDataUpdateCoordinator, appliance):
         """Initialize."""
         super().__init__(coordinator)
+        self.coordinator = coordinator
         self._appliance = appliance
         self._attr_unique_id = appliance.get("id")
 

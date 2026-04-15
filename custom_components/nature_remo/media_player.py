@@ -26,7 +26,7 @@ async def async_setup_entry(
     async_add_entities(entities)
 
 
-class NatureRemoTV(CoordinatorEntity, MediaPlayerEntity):
+class NatureRemoTV(CoordinatorEntity[NatureRemoDataUpdateCoordinator], MediaPlayerEntity):
     """Implementation of a Nature Remo TV."""
 
     _attr_supported_features = (
@@ -40,6 +40,7 @@ class NatureRemoTV(CoordinatorEntity, MediaPlayerEntity):
     def __init__(self, coordinator: NatureRemoDataUpdateCoordinator, appliance):
         """Initialize."""
         super().__init__(coordinator)
+        self.coordinator = coordinator
         self._appliance = appliance
         self._attr_name = appliance.get("nickname", "TV")
         self._attr_unique_id = appliance.get("id")

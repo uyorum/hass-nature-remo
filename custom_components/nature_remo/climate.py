@@ -36,7 +36,7 @@ async def async_setup_entry(
     async_add_entities(entities)
 
 
-class NatureRemoClimate(CoordinatorEntity, ClimateEntity):
+class NatureRemoClimate(CoordinatorEntity[NatureRemoDataUpdateCoordinator], ClimateEntity):
     """Implementation of a Nature Remo climate entity."""
 
     _attr_temperature_unit = UnitOfTemperature.CELSIUS
@@ -47,6 +47,7 @@ class NatureRemoClimate(CoordinatorEntity, ClimateEntity):
     def __init__(self, coordinator: NatureRemoDataUpdateCoordinator, appliance):
         """Initialize the climate entity."""
         super().__init__(coordinator)
+        self.coordinator = coordinator
         self._appliance = appliance
         self._attr_name = appliance.get("nickname", "Air Conditioner")
         self._attr_unique_id = appliance.get("id")

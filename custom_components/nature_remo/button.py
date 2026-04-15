@@ -32,12 +32,13 @@ async def async_setup_entry(
     async_add_entities(entities)
 
 
-class NatureRemoSignalButton(CoordinatorEntity, ButtonEntity):
+class NatureRemoSignalButton(CoordinatorEntity[NatureRemoDataUpdateCoordinator], ButtonEntity):
     """Implementation of a Nature Remo IR signal as a button."""
 
     def __init__(self, coordinator: NatureRemoDataUpdateCoordinator, appliance, signal):
         """Initialize."""
         super().__init__(coordinator)
+        self.coordinator = coordinator
         self._appliance = appliance
         self._signal = signal
         self._attr_name = f"{appliance.get('nickname')} {signal.get('name')}"
@@ -59,7 +60,7 @@ class NatureRemoSignalButton(CoordinatorEntity, ButtonEntity):
         await self.coordinator.api.post_signal(self._signal["id"])
 
 
-class NatureRemoApplianceButton(CoordinatorEntity, ButtonEntity):
+class NatureRemoApplianceButton(CoordinatorEntity[NatureRemoDataUpdateCoordinator], ButtonEntity):
     """Implementation of a built-in Nature Remo appliance button (e.g. brightness, night light)."""
 
     _attr_has_entity_name = True
@@ -67,6 +68,7 @@ class NatureRemoApplianceButton(CoordinatorEntity, ButtonEntity):
     def __init__(self, coordinator: NatureRemoDataUpdateCoordinator, appliance, button_name):
         """Initialize."""
         super().__init__(coordinator)
+        self.coordinator = coordinator
         self._appliance = appliance
         self._button_name = button_name
         self._attr_name = button_name.replace("-", " ").title()
