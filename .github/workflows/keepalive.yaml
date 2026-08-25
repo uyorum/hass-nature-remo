@@ -1,0 +1,24 @@
+name: Keepalive Workflow
+
+on:
+  schedule:
+    # 毎月1日の 0:00 (UTC) に実行（60日ルール対策）
+    - cron: '0 0 1 * *'
+  # 手動実行用トリガー
+  workflow_dispatch:
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create empty commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit --allow-empty -m "ci: keep actions active [skip ci]"
+          git push
